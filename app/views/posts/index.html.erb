@@ -1,29 +1,29 @@
-<p id="notice"><%= notice %></p>
-
-<h1>Posts</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Body</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @posts.each do |post| %>
-      <tr>
-        <td><%= post.title %></td>
-        <td><%= post.body %></td>
-        <td><%= link_to 'Show', post %></td>
-        <td><%= link_to 'Edit', edit_post_path(post) %></td>
-        <td><%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Post', new_post_path %>
+<div class="info">
+  <%= render 'shared/avatar', user: @posts %>
+  <h4 class="name"><%= link_to posts.user.name, user_path(posts.user) %></h4>
+  <span class="action">created a <%= link_to 'post', post %></span>
+</div>
+<div class="content">
+  <span class="text"><%= post.content_html %></span>
+  <% if post.attachment.present? %>
+    <div class="attachment">
+      <%= image_tag post.attachment %>
+    </div>
+  <% end %>
+  <%= render 'shared/created_at', activity: post %>
+  <div class="points">
+    <span class="like-count"><%= pluralize(post.cached_votes_up, 'like') %></span>
+    <span class="comments-count"><%= pluralize(post.comments_count, 'comment') %></span>
+    <div class="pull-right">
+      <% if belongs_to_user?(post) %>
+        <%= link_to edit_post_path(post), class: 'btn btn-primary btn-sm' do %>
+          <% fa_icon 'pencil' %>
+        <% end %>
+        <%= link_to post_path(post), method: :delete, class:'btn btn-danger btn-sm', remote: remote do %>
+          <% fa_icon 'trash' %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
+<%= render 'shared/actions', resource: post %>
